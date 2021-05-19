@@ -97,9 +97,35 @@ const typeDefs = `
         author: String!
         post: String!
     }
+    type Nn{
+        name: String!
+        age: Int
+        email: String!,
+    }
+
+    type Mutation{
+        createUser(data: CreateUserInput): User!
+        createPost(title: String!, body: String!)
+
+    }
+    input CreateUserInput{
+        name: String!
+        age: Int!
+    }
 `
 
 const resolvers = {
+    Mutation:{
+        createUser(parent, args, ctx, info){
+            const user = {
+                name: args.data.name,
+                email: args.email,
+                age: args.age
+            }
+            ;
+            return user
+        }
+    },
     Query:{
         users(parent, args, ctx, info) {
             return users
