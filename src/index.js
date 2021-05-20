@@ -1,134 +1,23 @@
 import {GraphQLServer} from 'graphql-yoga'
+import db from './db'
 
-const comments = [
-    {
-        id: 12345,
-        text: 'It does indeed take great skill thanks blue bottle',
-        author: 'blue bottle',
-        post: 123
-    },
-    {
-        id: 1234,
-        text: 'Aeropress is simply the best thanks Stumptown you guys are kind of hipster dummies',
-        author: 'Stumptown',
-        post: 666
-    },
-    {
-        id: 123,
-        text: 'Not bad, mostly use while camping cause it\'s so easy thanks Coffee guy',
-        author: 'Coffee guy',
-        post: 6666
-    }
-]
 
-const posts = [
-    {
-        title: 'how to brew hario V60',
-        body: 'with great skill',
-        author: 'blue bottle',
-        published: false,
-        id: 123
-    },
-    {
-        title: 'how to brew aeropress',
-        body: 'arguable the best brew you\'ll  find however not everyone will agree with this',
-        author: 'Stumptown',
-        published: true,
-        id: 666
-    },
-    {
-        title: 'how to brew french press',
-        body: 'Not too complicated. gives some of that good ole sludge',
-        author: 'Coffee guy',
-        published: true,
-        id: 6666
-    }
-];
-
-const users = [
-    {
-        id: 123,
-        name: 'Coffee guy',
-        age: 45,
-        occupation: 'Software'
-    },
-    {
-        id: 1234,
-        name: 'Stumptown',
-        age: 17,
-        occupation: 'coffee shop'
-    },
-    {
-        id: 12345,
-        name: 'blue bottle',
-        occupation: 'coffee producers'
-    }
-]
-
-const typeDefs = `
-    type Query{
-        me: User!
-        grades:[Int!]!
-        post: Post!
-        posts(query: String): [Post!]
-        users(query: String):[User!]!
-        comments:[Comment!]
-    }
-    type User {
-        id: ID!,
-        name: String!,
-        age: Int,
-        occupation: String!,
-        email: String!,
-        posts: [Post!],
-        comments: [Comment!]
-    },
-    type Post {
-        title: String!,
-        body: String,
-        author: User!,
-        published: Boolean,
-        id: ID!,
-        comments: [Comment!]
-    },
-    type Comment{
-        id: ID!
-        text: String!
-        author: String!
-        post: String!
-    }
-    type Nn{
-        name: String!
-        age: Int
-        email: String!,
-    }
-
-    type Mutation{
-        createUser(data: CreateUserInput): User!
-        createPost(title: String!, body: String!)
-
-    }
-    input CreateUserInput{
-        name: String!
-        age: Int!
-    }
-`
 
 const resolvers = {
     Mutation:{
-        createUser(parent, args, ctx, info){
+        createUser(parent, args, {db}, info){
             const user = {
                 name: args.data.name,
                 email: args.email,
                 age: args.age
             }
             ;
-            return user
+            return db.user
         }
     },
     Query:{
-        users(parent, args, ctx, info) {
-            return users
+        users(parent, args, {db}, info) {
+            return db.users
         },
         me() {
             return {
@@ -137,54 +26,54 @@ const resolvers = {
                 occupation: 'builder'
             }
         },
-        post(parent, args, ctx, info) {
-            return post
+        post(parent, args, {db}, info) {
+            return db.post
         },
-        posts(parent, args, ctx, info) {
+        posts(parent, args, {db}, info) {
             // if(!args) {
             //     return posts
             // }
             // return posts.filter((post) => {
             //     return post.title.toLowerCase().includes(args.query)
             // });
-            return posts
+            return db.posts
         },
-        comments(parent, args, ctx, info) {
-            return comments
+        comments(parent, args, {db}, info) {
+            return db.comments
         }
     },  
     Post: {
-        author(parent, args, ctx, info) {
+        author(parent, args, {db}, info) {
             if(!args){
-                return posts;
+                return db.posts;
             }
-            return users.find((user) => {
+            return db.users.find((user) => {
                 return user.name === parent.author
             })
         },
-        comments(parent, args, ctx, info) {
-            return comments.filter((comment) => 
+        comments(parent, args, {db}, info) {
+            return db.comments.filter((comment) => 
                 comment.post === parent.id
             )
         }
     },
     User: {
-        posts(parent, args, ctx, info) {
-            return posts.filter((post) => 
-                post.author === parent.name || post.author === parent.id
+        posts(parent, args, {db}, info) {
+            return db.posts.filter((post) => 
+            post.author === parent.name || post.author === parent.id
             )
         },
-        comments(parent, args, ctx, info) {
-            return comments.filter((comment) => comment.author === parent.name)
+        comments(parent, args, {db}, info) {
+            return db.comments.filter((comment) => comment.author === parent.name)
         }
         
     },
     Comment:{
-        author(parent, args, ctx, info){
-            return users.find((user) => user.id === parent.author)
+        author(parent, args, {db}, info){
+            return db.users.find((user) => user.id === parent.author)
         },
-        post(parent, args, ctx, info){
-            return posts.find((post) => post.id === parent.post)
+        post(parent, args, {db}, info){
+            return db.posts.find((post) => post.id === parent.post)
         }
     }
 }
@@ -193,8 +82,11 @@ const resolvers = {
 
 
 const server = new GraphQLServer({
-    typeDefs,
-    resolvers
+    typeDefs:'./src/schema.graphql',
+    resolvers,
+    context:{
+        db:db
+    }
 })
 
 server.start(()=>{
