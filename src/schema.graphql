@@ -1,35 +1,69 @@
 type Query {
+    users(query: String): [User!]!
+    posts(query: String): [Post!]!
+    comments: [Comment!]!
     me: User!
-    drafts (page: Int, pageSize: Int): [Post!]!
-    posts (page: Int, pageSize: Int): [Post!]!
+    post: Post!
 }
 
 type Mutation {
-    signup(name: String!, email: String!, password: String!): AuthPayload!
-    login(email: String!, password: String!): AuthPayload!
-    createPost(title: String, body: String): Post!
-    editPost(id: ID!, title: String, body: String, published: Boolean): Post!
+    createUser(data: CreateUserInput!): User!
+    deleteUser(id: ID!): User!
+    updateUser(id: ID!, data: UpdateUserInput!): User!
+    createPost(data: CreatePostInput!): Post!
     deletePost(id: ID!): Post!
-    createComment(postId: ID!, parentId: ID, text: String!): Comment!
-    editComment(id: ID!, text: String!): Comment!
+    updatePost(id: ID!, data: UpdatePostInput!): Post!
+    createComment(data: CreateCommentInput!): Comment!
     deleteComment(id: ID!): Comment!
-}
-
-type AuthPayload {
-  token: String!
-  user: User!
+    updateComment(id: ID!, data: UpdateCommentInput!): Comment!
 }
 
 type Subscription {
-    comments(postId: ID!): Comment!
+    count: Int!
+    comment(postId: ID!): Comment!
+}
+
+input CreateUserInput {
+    name: String!
+    email: String!
+    age: Int
+}
+
+input UpdateUserInput {
+    name: String
+    email: String
+    age: Int
+}
+
+input CreatePostInput {
+    title: String!
+    body: String!
+    published: Boolean!
+    author: ID!
+}
+
+input UpdatePostInput {
+    title: String
+    body: String
+    published: Boolean
+}
+
+input CreateCommentInput {
+    text: String!
+    author: ID!
+    post: ID!
+}
+
+input UpdateCommentInput {
+    text: String
 }
 
 type User {
     id: ID!
-    name: String! 
-    email: String
-    posts: [Post]!
-    drafts: [Post]
+    name: String!
+    email: String!
+    age: Int
+    posts: [Post!]!
     comments: [Comment!]!
 }
 
@@ -39,17 +73,12 @@ type Post {
     body: String!
     published: Boolean!
     author: User!
-    comments: [Comment]!
-    createdAt: String!
-    updatedAt: String!
+    comments: [Comment!]!
 }
 
 type Comment {
     id: ID!
     text: String!
-    parent: Comment
-    post: Post!
     author: User!
-    createdAt: String!
-    updatedAt: String!
+    post: Post!
 }

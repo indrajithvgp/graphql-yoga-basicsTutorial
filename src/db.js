@@ -1,72 +1,64 @@
-const comments = [
-    {
-        id: 12345,
-        text: 'It does indeed take great skill thanks blue bottle',
-        author: 'blue bottle',
-        post: 123
-    },
-    {
-        id: 1234,
-        text: 'Aeropress is simply the best thanks Stumptown you guys are kind of hipster dummies',
-        author: 'Stumptown',
-        post: 666
-    },
-    {
-        id: 123,
-        text: 'Not bad, mostly use while camping cause it\'s so easy thanks Coffee guy',
-        author: 'Coffee guy',
-        post: 6666
-    }
-]
+const users = [{
+    id: '1',
+    name: 'Andrew',
+    email: 'andrew@example.com',
+    age: 27
+}, {
+    id: '2',
+    name: 'Sarah',
+    email: 'sarah@example.com'
+}, {
+    id: '3',
+    name: 'Mike',
+    email: 'mike@example.com'
+}]
 
-const posts = [
-    {
-        title: 'how to brew hario V60',
-        body: 'with great skill',
-        author: 'blue bottle',
-        published: false,
-        id: 123
-    },
-    {
-        title: 'how to brew aeropress',
-        body: 'arguable the best brew you\'ll  find however not everyone will agree with this',
-        author: 'Stumptown',
-        published: true,
-        id: 666
-    },
-    {
-        title: 'how to brew french press',
-        body: 'Not too complicated. gives some of that good ole sludge',
-        author: 'Coffee guy',
-        published: true,
-        id: 6666
-    }
-];
+const posts = [{
+    id: '10',
+    title: 'GraphQL 101',
+    body: 'This is how to use GraphQL...',
+    published: true,
+    author: '1'
+}, {
+    id: '11',
+    title: 'GraphQL 201',
+    body: 'This is an advanced GraphQL post...',
+    published: false,
+    author: '1'
+}, {
+    id: '12',
+    title: 'Programming Music',
+    body: '',
+    published: true,
+    author: '2'
+}]
 
-const users = [
-    {
-        id: 123,
-        name: 'Coffee guy',
-        age: 45,
-        occupation: 'Software'
-    },
-    {
-        id: 1234,
-        name: 'Stumptown',
-        age: 17,
-        occupation: 'coffee shop'
-    },
-    {
-        id: 12345,
-        name: 'blue bottle',
-        occupation: 'coffee producers'
-    }
-]
+const comments = [{
+    id: '102',
+    text: 'This worked well for me. Thanks!',
+    author: '3',
+    post: '10'
+}, {
+    id: '103',
+    text: 'Glad you enjoyed it.',
+    author: '1',
+    post: '10'
+}, {
+    id: '104',
+    text: 'This did no work.',
+    author: '2',
+    post: '11'
+}, {
+    id: '105',
+    text: 'Nevermind. I got it to work.',
+    author: '1',
+    post: '12'
+}]
 
 const db = {
     users,
-    comments,
-    posts
+    posts,
+    comments
 }
 
-export {db as default}
+export { db as default }
